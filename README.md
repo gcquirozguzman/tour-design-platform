@@ -10,6 +10,14 @@
 
 <p align="center"><a href="https://www.google.com/" target="_blank">Demo Online</a></p>
 
+# 🧩 Solution Architecture
+
+<p align="center">
+  <img src="./architecture/Diagrama%20Arquitectura%20Solucion%20v1.png" width="800" alt="Solution Architecture Diagram">
+</p>
+
+You can also find the editable version in [`architecture/Diagrama Arquitectura Solucion v1.drawio`](./architecture/Diagrama%20Arquitectura%20Solucion%20v1.drawio).
+
 # Frontend - Angular
 
 ## How to run it locally

@@ -1,10 +1,9 @@
 package com.tourdesign.platform.service.impl;
 
-import com.tourdesign.platform.entity.TravelPackageEntity;
 import com.tourdesign.platform.exception.DataNotFoundException;
+import com.tourdesign.platform.mapper.*;
 import com.tourdesign.platform.model.TravelPackageModel;
-import com.tourdesign.platform.mapper.TravelPackageMapper;
-import com.tourdesign.platform.repository.TravelPackageRepository;
+import com.tourdesign.platform.repository.*;
 import com.tourdesign.platform.service.TravelPackageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,43 +14,57 @@ import java.util.Optional;
 public class TravelPackageServiceImpl implements TravelPackageService {
 
     @Autowired
-    private TravelPackageRepository repository;
+    private TravelPackageRepository travelPackageRepository;
 
     @Autowired
-    private TravelPackageMapper mapper;
+    private TravelPackageMapper travelPackageMapper;
+
+    @Autowired
+    private PackageHotelRepository packageHotelRepository;
+
+    @Autowired
+    private PackageHotelMapper packageHotelMapper;
 
     @Override
     public List<TravelPackageModel> list() {
-        return mapper.toModelList(repository.findAll());
+        return travelPackageMapper.toModelList(travelPackageRepository.findAll());
     }
 
     @Override
     public TravelPackageModel create(TravelPackageModel obj) {
-        var entity = mapper.toEntity(obj);
-        entity = repository.save(entity);
-        return mapper.toModel(entity);
+        var entity = travelPackageMapper.toEntity(obj);
+        entity = travelPackageRepository.save(entity);
+        return travelPackageMapper.toModel(entity);
     }
 
     @Override
     public Optional<TravelPackageModel> search(Long id) {
-        var entity = repository.findById(id).orElseThrow(() -> new DataNotFoundException(id));
-        return Optional.of(mapper.toModel(entity));
+        var entity = travelPackageRepository.findById(id).orElseThrow(() -> new DataNotFoundException(id));
+        return Optional.of(travelPackageMapper.toModel(entity));
+    }
+
+    @Override
+    public Optional<TravelPackageModel> searchDetail(Long id) {
+        var entity = travelPackageRepository.findById(id).orElseThrow(() -> new DataNotFoundException(id));
+        TravelPackageModel travelPackageModel = travelPackageMapper.toModel(entity);
+
+        return Optional.of(travelPackageMapper.toModel(entity));
     }
 
     @Override
     public Optional<TravelPackageModel> update(Long id, TravelPackageModel obj) {
-        var entity = mapper.toEntity(obj);
-        return repository.findById(id).map(existing -> {
-            mapper.patchEntity(existing, entity);
-            var updated = repository.save(existing);
-            return mapper.toModel(updated);
+        var entity = travelPackageMapper.toEntity(obj);
+        return travelPackageRepository.findById(id).map(existing -> {
+            travelPackageMapper.patchEntity(existing, entity);
+            var updated = travelPackageRepository.save(existing);
+            return travelPackageMapper.toModel(updated);
         });
     }
 
     @Override
     public boolean delete(Long id) {
-        return repository.findById(id).map(e -> {
-            repository.delete(e);
+        return travelPackageRepository.findById(id).map(e -> {
+            travelPackageRepository.delete(e);
             return true;
         }).orElse(false);
     }

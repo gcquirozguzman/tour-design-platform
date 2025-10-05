@@ -15,4 +15,6 @@ public interface RecommendationHistoryService {
     Optional<RecommendationHistoryModel> update(Long id, RecommendationHistoryModel obj);
 
     boolean delete(Long id);
+
+    List<RecommendationHistoryModel> searchByClient(Long clientId);
 }

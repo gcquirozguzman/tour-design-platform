@@ -12,6 +12,8 @@ public interface TravelPackageService {
 
     Optional<TravelPackageModel> search(Long id);
 
+    Optional<TravelPackageModel> searchDetail(Long id);
+
     Optional<TravelPackageModel> update(Long id, TravelPackageModel obj);
 
     boolean delete(Long id);

@@ -11,9 +11,11 @@ public interface ClientPreferenceService {
 
     ClientPreferenceModel create(ClientPreferenceModel obj);
 
-    List<ClientPreferenceEntity> getPreferencesByClient(Long clientId);
+    List<ClientPreferenceModel> getPreferencesByClient(Long clientId);
 
     Optional<ClientPreferenceModel> search(Long id);
+
+    List<ClientPreferenceModel> searchAllById(List<Long> preferenceIds);
 
     Optional<ClientPreferenceModel> update(Long id, ClientPreferenceModel obj);
 

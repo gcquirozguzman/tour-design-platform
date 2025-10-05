@@ -12,6 +12,8 @@ public interface PackageSpotService {
 
     Optional<PackageSpotModel> search(Long id);
 
+    List<PackageSpotModel> findByTravelPackageId(Long packageId);
+
     Optional<PackageSpotModel> update(Long id, PackageSpotModel obj);
 
     boolean delete(Long id);

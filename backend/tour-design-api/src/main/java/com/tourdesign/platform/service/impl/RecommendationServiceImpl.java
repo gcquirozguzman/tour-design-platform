@@ -2,12 +2,11 @@ package com.tourdesign.platform.service.impl;
 
 import com.tourdesign.platform.dto.request.RecommendationRequest;
 import com.tourdesign.platform.dto.response.RecommendationResponse;
-import com.tourdesign.platform.entity.*;
 import com.tourdesign.platform.exception.DataNotFoundException;
 import com.tourdesign.platform.mapper.*;
 import com.tourdesign.platform.model.*;
 import com.tourdesign.platform.repository.*;
-import com.tourdesign.platform.service.RecommendationService;
+import com.tourdesign.platform.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,34 +21,34 @@ import java.util.stream.Collectors;
 public class RecommendationServiceImpl implements RecommendationService {
 
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @Autowired
-    private ClientPreferenceRepository clientPreferenceRepository;
+    private ClientPreferenceService clientPreferenceService;
 
     @Autowired
-    private HotelRepository hotelRepository;
+    private HotelService hotelService;
 
     @Autowired
-    private RestaurantRepository restaurantRepository;
+    private RestaurantService restaurantService;
 
     @Autowired
-    private TouristSpotRepository touristSpotRepository;
+    private TouristSpotService touristSpotService;
 
     @Autowired
-    private TravelPackageRepository travelPackageRepository;
+    private TravelPackageService travelPackageService;
 
     @Autowired
-    private PackageHotelRepository packageHotelRepository;
+    private PackageHotelService packageHotelService;
 
     @Autowired
-    private PackageRestaurantRepository packageRestaurantRepository;
+    private PackageRestaurantService packageRestaurantService;
 
     @Autowired
-    private PackageSpotRepository packageSpotRepository;
+    private PackageSpotService packageSpotService;
 
     @Autowired
-    private RecommendationHistoryRepository recommendationHistoryRepository;
+    private RecommendationHistoryService recommendationHistoryService;
 
     @Autowired
     private ClientMapper clientMapper;
@@ -78,27 +77,26 @@ public class RecommendationServiceImpl implements RecommendationService {
     @Transactional
     public RecommendationResponse createRecommendation(RecommendationRequest request) {
         // 1) Validate client
-        ClientEntity client = clientRepository.findById(request.getClientId())
+        ClientModel client = clientService.search(request.getClientId())
                 .orElseThrow(() -> new DataNotFoundException(request.getClientId()));
 
         // 2) Load preferences by IDs (if none provided, prefer client's own preferences)
-        List<ClientPreferenceEntity> chosenPrefs = new ArrayList<>();
+        List<ClientPreferenceModel> chosenPrefs = new ArrayList<>();
         if (request.getPreferenceIds() != null && !request.getPreferenceIds().isEmpty()) {
             // findAllById returns iterable of existing ids
-            clientPreferenceRepository.findAllById(request.getPreferenceIds())
-                    .forEach(chosenPrefs::add);
+            chosenPrefs.addAll(clientPreferenceService.searchAllById(request.getPreferenceIds()));
         } else {
             // fallback to client's stored preferences
-            List<ClientPreferenceEntity> clientPrefs = clientPreferenceRepository.findByClientId(client.getId());
+            List<ClientPreferenceModel> clientPrefs = clientPreferenceService.getPreferencesByClient(client.getId());
             if (clientPrefs != null && !clientPrefs.isEmpty()) {
                 chosenPrefs.addAll(clientPrefs);
             }
         }
 
         // 3) fetch catalogs
-        List<HotelEntity> hotels = hotelRepository.findAll();
-        List<RestaurantEntity> restaurants = restaurantRepository.findAll();
-        List<TouristSpotEntity> spots = touristSpotRepository.findAll();
+        List<HotelModel> hotels = hotelService.list();
+        List<RestaurantModel> restaurants = restaurantService.list();
+        List<TouristSpotModel> spots = touristSpotService.list();
 
         if (hotels.isEmpty() || restaurants.isEmpty() || spots.isEmpty()) {
             throw new IllegalStateException("Not enough catalog data to build a package (hotels/restaurants/spots required).");
@@ -110,12 +108,12 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
 
-        HotelEntity chosenHotel = pickMatchingHotel(hotels, prefCats);
-        RestaurantEntity chosenRestaurant = pickMatchingRestaurant(restaurants, prefCats);
-        List<TouristSpotEntity> chosenSpots = pickMatchingSpots(spots, prefCats, 3);
+        HotelModel chosenHotel = pickMatchingHotel(hotels, prefCats);
+        RestaurantModel chosenRestaurant = pickMatchingRestaurant(restaurants, prefCats);
+        List<TouristSpotModel> chosenSpots = pickMatchingSpots(spots, prefCats, 3);
 
-        // 5) create TravelPackageEntity
-        TravelPackageEntity travelPackage = new TravelPackageEntity();
+        // 5) create TravelPackageModel
+        TravelPackageModel travelPackage = new TravelPackageModel();
         String pkgName = buildPackageName(client, prefCats);
         travelPackage.setName(pkgName);
         travelPackage.setDescription("Auto-generated package based on preferences: " + String.join(", ", prefCats));
@@ -124,56 +122,55 @@ public class RecommendationServiceImpl implements RecommendationService {
         double estPrice = estimatePrice(chosenHotel, chosenRestaurant, chosenSpots, travelPackage.getDurationDays());
         travelPackage.setEstimatedPrice(estPrice);
         travelPackage.setFocusType(prefCats.isEmpty() ? "General" : String.join(",", prefCats));
-        travelPackage = travelPackageRepository.save(travelPackage);
+        travelPackage = travelPackageService.create(travelPackage);
 
         // 6) save package relationships
-        PackageHotelEntity phe = new PackageHotelEntity();
+        PackageHotelModel phe = new PackageHotelModel();
         phe.setOrderIndex(1);
         phe.setTravelPackage(travelPackage);
         phe.setHotel(chosenHotel);
-        packageHotelRepository.save(phe);
+        packageHotelService.create(phe);
 
-        PackageRestaurantEntity pre = new PackageRestaurantEntity();
+        PackageRestaurantModel pre = new PackageRestaurantModel();
         pre.setOrderIndex(1);
         pre.setTravelPackage(travelPackage);
         pre.setRestaurant(chosenRestaurant);
-        packageRestaurantRepository.save(pre);
+        packageRestaurantService.create(pre);
 
         int idx = 1;
-        for (TouristSpotEntity s : chosenSpots) {
-            PackageSpotEntity pse = new PackageSpotEntity();
+        for (TouristSpotModel s : chosenSpots) {
+            PackageSpotModel pse = new PackageSpotModel();
             pse.setOrderIndex(idx++);
             pse.setTravelPackage(travelPackage);
             pse.setTouristSpot(s);
-            packageSpotRepository.save(pse);
+            packageSpotService.create(pse);
         }
 
         // 7) save recommendation history
-        RecommendationHistoryEntity history = new RecommendationHistoryEntity();
+        RecommendationHistoryModel history = new RecommendationHistoryModel();
         history.setClient(client);
         history.setTravelPackage(travelPackage);
         history.setRecommendationDate(LocalDateTime.now());
         history.setAccepted(false);
-        RecommendationHistoryEntity savedHistory = recommendationHistoryRepository.save(history);
+        RecommendationHistoryModel savedHistory = recommendationHistoryService.create(history);
 
         // 8) build response (map entities -> models)
-        RecommendationResponse response = RecommendationResponse.builder()
-                .client(clientMapper.toModel(client))
-                .preferences(clientPreferenceMapper.toModelList(chosenPrefs))
-                .travelPackage(travelPackageMapper.toModel(travelPackage))
-                .hotel(hotelMapper.toModel(chosenHotel))
-                .restaurant(restaurantMapper.toModel(chosenRestaurant))
-                .spots(chosenSpots.stream().map(touristSpotMapper::toModel).collect(Collectors.toList()))
-                .history(recommendationHistoryMapper.toModel(savedHistory))
-                .build();
 
-        return response;
+        return RecommendationResponse.builder()
+                .client(client)
+                .preferences(chosenPrefs)
+                .travelPackage(travelPackage)
+                .hotel(chosenHotel)
+                .restaurant(chosenRestaurant)
+                .spots(chosenSpots)
+                .history(savedHistory)
+                .build();
     }
 
-    private HotelEntity pickMatchingHotel(List<HotelEntity> hotels, List<String> prefCats) {
+    private HotelModel pickMatchingHotel(List<HotelModel> hotels, List<String> prefCats) {
         if (prefCats.isEmpty()) return randomFromList(hotels);
 
-        List<HotelEntity> filtered = hotels.stream()
+        List<HotelModel> filtered = hotels.stream()
                 .filter(h -> {
                     String loc = h.getLocation() == null ? "" : h.getLocation().toLowerCase();
                     return prefCats.stream().anyMatch(loc::contains);
@@ -182,10 +179,10 @@ public class RecommendationServiceImpl implements RecommendationService {
         return filtered.isEmpty() ? randomFromList(hotels) : randomFromList(filtered);
     }
 
-    private RestaurantEntity pickMatchingRestaurant(List<RestaurantEntity> restaurants, List<String> prefCats) {
+    private RestaurantModel pickMatchingRestaurant(List<RestaurantModel> restaurants, List<String> prefCats) {
         if (prefCats.isEmpty()) return randomFromList(restaurants);
 
-        List<RestaurantEntity> filtered = restaurants.stream()
+        List<RestaurantModel> filtered = restaurants.stream()
                 .filter(r -> {
                     String cuisine = r.getCuisineType() == null ? "" : r.getCuisineType().toLowerCase();
                     return prefCats.stream().anyMatch(cuisine::contains);
@@ -194,8 +191,8 @@ public class RecommendationServiceImpl implements RecommendationService {
         return filtered.isEmpty() ? randomFromList(restaurants) : randomFromList(filtered);
     }
 
-    private List<TouristSpotEntity> pickMatchingSpots(List<TouristSpotEntity> spots, List<String> prefCats, int max) {
-        List<TouristSpotEntity> pool;
+    private List<TouristSpotModel> pickMatchingSpots(List<TouristSpotModel> spots, List<String> prefCats, int max) {
+        List<TouristSpotModel> pool;
         if (prefCats.isEmpty()) {
             pool = new ArrayList<>(spots);
         } else {
@@ -215,7 +212,7 @@ public class RecommendationServiceImpl implements RecommendationService {
         return list.get(rnd.nextInt(list.size()));
     }
 
-    private String buildPackageName(ClientEntity client, List<String> prefCats) {
+    private String buildPackageName(ClientModel client, List<String> prefCats) {
         String base = "Package for " + client.getFirstName();
         if (!prefCats.isEmpty()) {
             base += " - " + prefCats.stream().map(String::toLowerCase).map(s -> Character.toUpperCase(s.charAt(0)) + s.substring(1)).collect(Collectors.joining(", "));
@@ -223,7 +220,7 @@ public class RecommendationServiceImpl implements RecommendationService {
         return base;
     }
 
-    private double estimatePrice(HotelEntity hotel, RestaurantEntity restaurant, List<TouristSpotEntity> spots, int days) {
+    private double estimatePrice(HotelModel hotel, RestaurantModel restaurant, List<TouristSpotModel> spots, int days) {
         double hotelTotal = (hotel.getPricePerNight() == null ? 0.0 : hotel.getPricePerNight() * days);
         double restaurantAvg = (restaurant.getAveragePrice() == null ? 0.0 : restaurant.getAveragePrice());
         double spotsSum = spots.stream().mapToDouble(s -> s.getEntranceFee() == null ? 0.0 : s.getEntranceFee()).sum();

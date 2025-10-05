@@ -33,14 +33,19 @@ public class ClientPreferenceServiceImpl implements ClientPreferenceService {
     }
 
     @Override
-    public List<ClientPreferenceEntity> getPreferencesByClient(Long clientId) {
-        return repository.findByClientId(clientId);
+    public List<ClientPreferenceModel> getPreferencesByClient(Long clientId) {
+        return mapper.toModelList(repository.findByClientId(clientId));
     }
 
     @Override
     public Optional<ClientPreferenceModel> search(Long id) {
         var entity = repository.findById(id).orElseThrow(() -> new DataNotFoundException(id));
         return Optional.of(mapper.toModel(entity));
+    }
+
+    @Override
+    public List<ClientPreferenceModel> searchAllById(List<Long> preferenceIds) {
+        return mapper.toModelList(repository.findAllById(preferenceIds));
     }
 
     @Override

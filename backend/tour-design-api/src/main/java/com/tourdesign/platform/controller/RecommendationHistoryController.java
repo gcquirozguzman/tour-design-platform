@@ -1,6 +1,7 @@
 package com.tourdesign.platform.controller;
 
 import com.tourdesign.platform.model.RecommendationHistoryModel;
+import com.tourdesign.platform.model.TravelPackageModel;
 import com.tourdesign.platform.service.RecommendationHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,4 +43,11 @@ public class RecommendationHistoryController {
         if (service.delete(id)) return ResponseEntity.ok().build();
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/searchByClient/{clientId}")
+    public ResponseEntity<List<RecommendationHistoryModel>> searchByClient(@PathVariable Long clientId) {
+        List<RecommendationHistoryModel> response = service.searchByClient(clientId);
+        return ResponseEntity.ok(response);
+    }
+
 }

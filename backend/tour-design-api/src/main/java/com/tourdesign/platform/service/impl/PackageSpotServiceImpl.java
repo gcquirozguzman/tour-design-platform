@@ -1,6 +1,5 @@
 package com.tourdesign.platform.service.impl;
 
-import com.tourdesign.platform.entity.PackageSpotEntity;
 import com.tourdesign.platform.exception.DataNotFoundException;
 import com.tourdesign.platform.model.PackageSpotModel;
 import com.tourdesign.platform.mapper.PackageSpotMapper;
@@ -36,6 +35,11 @@ public class PackageSpotServiceImpl implements PackageSpotService {
     public Optional<PackageSpotModel> search(Long id) {
         var entity = repository.findById(id).orElseThrow(() -> new DataNotFoundException(id));
         return Optional.of(mapper.toModel(entity));
+    }
+
+    @Override
+    public List<PackageSpotModel> findByTravelPackageId(Long packageId) {
+        return mapper.toModelList(repository.findByTravelPackageId(packageId));
     }
 
     @Override

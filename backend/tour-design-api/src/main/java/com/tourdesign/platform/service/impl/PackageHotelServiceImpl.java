@@ -1,6 +1,5 @@
 package com.tourdesign.platform.service.impl;
 
-import com.tourdesign.platform.entity.PackageHotelEntity;
 import com.tourdesign.platform.exception.DataNotFoundException;
 import com.tourdesign.platform.model.PackageHotelModel;
 import com.tourdesign.platform.mapper.PackageHotelMapper;
@@ -36,6 +35,11 @@ public class PackageHotelServiceImpl implements PackageHotelService {
     public Optional<PackageHotelModel> search(Long id) {
         var entity = repository.findById(id).orElseThrow(() -> new DataNotFoundException(id));
         return Optional.of(mapper.toModel(entity));
+    }
+
+    @Override
+    public List<PackageHotelModel> findByTravelPackageId(Long packageId) {
+        return mapper.toModelList(repository.findByTravelPackageId(packageId));
     }
 
     @Override

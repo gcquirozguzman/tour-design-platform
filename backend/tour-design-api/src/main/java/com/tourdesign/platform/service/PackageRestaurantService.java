@@ -12,6 +12,8 @@ public interface PackageRestaurantService {
 
     Optional<PackageRestaurantModel> search(Long id);
 
+    List<PackageRestaurantModel> findByTravelPackageId(Long packageId);
+
     Optional<PackageRestaurantModel> update(Long id, PackageRestaurantModel obj);
 
     boolean delete(Long id);

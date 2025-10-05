@@ -18,76 +18,76 @@ CREATE DATABASE tour_design
 -- Clientes
 CREATE TABLE client (
     id SERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    apellido VARCHAR(100) NOT NULL,
-    fecha_nacimiento DATE,
-    genero VARCHAR(10),
-    nacionalidad VARCHAR(50),
+    firstName VARCHAR(100) NOT NULL,
+    lastName VARCHAR(100) NOT NULL,
+    birthDate DATE,
+    gender VARCHAR(10),
+    nationality VARCHAR(50),
     email VARCHAR(150) UNIQUE,
-    telefono VARCHAR(50),
-    numero_hijos INT DEFAULT 0,
-    ocupacion VARCHAR(100),
-    ingreso_anual DECIMAL(12,2),
-    idiomas VARCHAR(200),
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    estado BOOLEAN DEFAULT TRUE
+    phone VARCHAR(50),
+    numberOfChildren INT DEFAULT 0,
+    occupation VARCHAR(100),
+    annualIncome DECIMAL(12,2),
+    languages VARCHAR(200),
+    registrationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    active BOOLEAN DEFAULT TRUE
 );
 
 -- Preferencias del cliente
 CREATE TABLE client_preference (
     id SERIAL PRIMARY KEY,
     client_id INT REFERENCES client(id) ON DELETE CASCADE,
-    categoria VARCHAR(50) NOT NULL,
-    nivel_interes INT CHECK (nivel_interes BETWEEN 1 AND 5),
-    detalles TEXT
+    category VARCHAR(50) NOT NULL,
+    interestLevel INT CHECK (nivel_interes BETWEEN 1 AND 5),
+    details TEXT
 );
 
 -- Paquetes de viaje
 CREATE TABLE travel_package (
     id SERIAL PRIMARY KEY,
-    nombre VARCHAR(150) NOT NULL,
-    descripcion TEXT,
-    duracion_dias INT,
-    precio_estimado DECIMAL(12,2),
-    tipo_enfoque VARCHAR(50),
-    nivel_dificultad INT,
-    publico_objetivo VARCHAR(50),
-    idioma_atencion VARCHAR(50)
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    durationDays INT,
+    estimatedPrice DECIMAL(12,2),
+    focusType VARCHAR(50),
+    difficultyLevel INT,
+    targetAudience VARCHAR(50),
+    serviceLanguage VARCHAR(50)
 );
 
 -- Hoteles
 CREATE TABLE hotel (
     id SERIAL PRIMARY KEY,
-    nombre VARCHAR(150) NOT NULL,
-    direccion TEXT,
-    categoria INT CHECK (categoria BETWEEN 1 AND 5),
-    precio_noche DECIMAL(12,2),
-    tipo_habitacion VARCHAR(50),
-    capacidad INT,
-    servicios JSONB,
-    ubicacion VARCHAR(100)
+    name VARCHAR(150) NOT NULL,
+    address TEXT,
+    stars INT CHECK (categoria BETWEEN 1 AND 5),
+    pricePerNight DECIMAL(12,2),
+    roomType VARCHAR(50),
+    capacity INT,
+    services JSONB,
+    location VARCHAR(100)
 );
 
 -- Restaurantes
 CREATE TABLE restaurant (
     id SERIAL PRIMARY KEY,
-    nombre VARCHAR(150) NOT NULL,
-    tipo_cocina VARCHAR(50),
-    ubicacion VARCHAR(100),
-    precio_promedio DECIMAL(12,2),
-    capacidad INT,
-    servicios JSONB
+    name VARCHAR(150) NOT NULL,
+    cuisineType VARCHAR(50),
+    location VARCHAR(100),
+    averagePrice DECIMAL(12,2),
+    capacity INT,
+    services JSONB
 );
 
 -- Lugares turísticos
 CREATE TABLE tourist_spot (
     id SERIAL PRIMARY KEY,
-    nombre VARCHAR(150) NOT NULL,
-    tipo_lugar VARCHAR(50),
-    ubicacion VARCHAR(100),
-    precio_entrada DECIMAL(12,2),
-    nivel_dificultad INT,
-    restricciones TEXT
+    name VARCHAR(150) NOT NULL,
+    spotType VARCHAR(50),
+    location VARCHAR(100),
+    entranceFee DECIMAL(12,2),
+    difficultyLevel INT,
+    restrictions TEXT
 );
 
 -- Relaciones Paquete ↔ Hotel
@@ -95,7 +95,7 @@ CREATE TABLE package_hotel (
     id SERIAL PRIMARY KEY,
     package_id INT REFERENCES travel_package(id) ON DELETE CASCADE,
     hotel_id INT REFERENCES hotel(id) ON DELETE CASCADE,
-    orden INT
+    orderIndex INT
 );
 
 -- Relaciones Paquete ↔ Restaurante
@@ -103,7 +103,7 @@ CREATE TABLE package_restaurant (
     id SERIAL PRIMARY KEY,
     package_id INT REFERENCES travel_package(id) ON DELETE CASCADE,
     restaurant_id INT REFERENCES restaurant(id) ON DELETE CASCADE,
-    orden INT
+    orderIndex INT
 );
 
 -- Relaciones Paquete ↔ Lugar turístico
@@ -111,7 +111,7 @@ CREATE TABLE package_spot (
     id SERIAL PRIMARY KEY,
     package_id INT REFERENCES travel_package(id) ON DELETE CASCADE,
     spot_id INT REFERENCES tourist_spot(id) ON DELETE CASCADE,
-    orden INT
+    orderIndex INT
 );
 
 -- Historial de recomendaciones
@@ -119,6 +119,6 @@ CREATE TABLE recommendation_history (
     id SERIAL PRIMARY KEY,
     client_id INT REFERENCES client(id) ON DELETE CASCADE,
     package_id INT REFERENCES travel_package(id) ON DELETE CASCADE,
-    fecha_recomendacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    aceptado BOOLEAN DEFAULT FALSE
+    recommendationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    accepted BOOLEAN DEFAULT FALSE
 );

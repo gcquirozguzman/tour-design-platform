@@ -1,0 +1,100 @@
+{
+	"info": {
+		"_postman_id": "97281367-d4f6-4b25-b28a-4242211d63ab",
+		"name": "API REST",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1189914"
+	},
+	"item": [
+		{
+			"name": "tour-design-api",
+			"item": [
+				{
+					"name": "Client",
+					"item": [
+						{
+							"name": "List",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/tour-design-api/client",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"tour-design-api",
+										"client"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Preference",
+					"item": [
+						{
+							"name": "List",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/tour-design-api/client-preference",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"tour-design-api",
+										"client-preference"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Recommendation",
+					"item": [
+						{
+							"name": "Recommend",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"clientId\": 1,\r\n    \"preferenceIds\": [\r\n        1,\r\n        2\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/tour-design-api/packages/recommend",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"tour-design-api",
+										"packages",
+										"recommend"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

@@ -16,10 +16,15 @@ public class HotelEntity {
     private Long id;
 
     private String name;
+
     private String address;
+
     private Integer stars;
+
     private Double pricePerNight;
+
     private String roomType;
+
     private Integer capacity;
 
     @Column(columnDefinition = "jsonb")
@@ -27,6 +32,4 @@ public class HotelEntity {
 
     private String location;
 
-    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PackageHotelEntity> packages;
 }

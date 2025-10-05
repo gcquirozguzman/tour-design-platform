@@ -16,20 +16,19 @@ public class TravelPackageEntity {
     private Long id;
 
     private String name;
+
     private String description;
+
     private Integer durationDays;
+
     private Double estimatedPrice;
+
     private String focusType;
+
     private Integer difficultyLevel;
+
     private String targetAudience;
+
     private String serviceLanguage;
 
-    @OneToMany(mappedBy = "travelPackage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PackageHotelEntity> hotels;
-
-    @OneToMany(mappedBy = "travelPackage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PackageRestaurantEntity> restaurants;
-
-    @OneToMany(mappedBy = "travelPackage", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PackageSpotEntity> spots;
 }

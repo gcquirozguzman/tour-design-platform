@@ -12,6 +12,8 @@ public interface ClientService {
 
     Optional<ClientModel> search(Long id);
 
+    List<ClientModel> searchByNameOrLastname(String query);
+
     Optional<ClientModel> update(Long id, ClientModel obj);
 
     boolean delete(Long id);

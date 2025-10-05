@@ -24,6 +24,4 @@ public class RestaurantEntity {
     @Column(columnDefinition = "jsonb")
     private String services;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PackageRestaurantEntity> packages;
 }

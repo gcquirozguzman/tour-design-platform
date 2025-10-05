@@ -1,5 +1,6 @@
 package com.tourdesign.platform.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -25,4 +26,5 @@ public class RecommendationHistoryEntity {
     @ManyToOne
     @JoinColumn(name = "package_id")
     private TravelPackageEntity travelPackage;
+
 }

@@ -4,14 +4,8 @@ import com.tourdesign.platform.model.ClientModel;
 import com.tourdesign.platform.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +28,12 @@ public class ClientController {
         return obj.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/searchByQuery")
+    public ResponseEntity<List<ClientModel>> searchByQuery(@RequestParam String query) {
+        List<ClientModel> results = service.searchByNameOrLastname(query);
+        return ResponseEntity.ok(results);
+    }
+
     @PostMapping
     public ResponseEntity<ClientModel> create(@RequestBody ClientModel obj) {
         ClientModel createdModel = service.create(obj);
@@ -54,4 +54,5 @@ public class ClientController {
             return ResponseEntity.notFound().build();
         }
     }
+
 }

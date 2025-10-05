@@ -41,6 +41,12 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public List<ClientModel> searchByNameOrLastname(String query) {
+        List<ClientEntity> entities = repository.searchByNameOrLastName(query);
+        return mapper.toModelList(entities);
+    }
+
+    @Override
     public Optional<ClientModel> update(Long id, ClientModel obj) {
         ClientEntity entity = mapper.toEntity(obj);
         return repository.findById(id)

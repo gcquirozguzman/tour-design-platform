@@ -42,4 +42,5 @@ public class ClientPreferenceController {
         if (service.delete(id)) return ResponseEntity.ok().build();
         return ResponseEntity.notFound().build();
     }
+
 }

@@ -16,3 +16,21 @@ img {
   border-radius: 0.5rem;
   object-fit: cover;
 }
+
+input.form-control,
+button.btn,
+select.form-select {
+  border-radius: 0.5rem;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.form-check-label {
+  margin-left: 0.5rem;
+  font-size: 1rem;
+}

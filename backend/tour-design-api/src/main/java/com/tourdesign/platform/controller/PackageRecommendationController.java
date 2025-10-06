@@ -3,17 +3,16 @@ package com.tourdesign.platform.controller;
 import com.tourdesign.platform.dto.request.RecommendationRequest;
 import com.tourdesign.platform.dto.response.RecommendationResponse;
 import com.tourdesign.platform.service.RecommendationService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/packages")
-@RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@RequestMapping("/packages-recommendation")
 public class PackageRecommendationController {
 
-    private final RecommendationService recommendationService;
+    @Autowired
+    private RecommendationService recommendationService;
 
     @PostMapping("/recommend")
     public ResponseEntity<RecommendationResponse> recommend(@RequestBody RecommendationRequest request) {

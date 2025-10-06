@@ -1,0 +1,20 @@
+table {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.table thead th {
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+}
+
+.table tbody td {
+  vertical-align: middle;
+}
+
+.badge {
+  font-size: 1rem;
+  padding: 0.5em 1em;
+  border-radius: 0.75rem;
+}

@@ -77,25 +77,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/experience-design-page',
         classes: 'nav-item',
         icon: 'chrome'
-      }
-    ]
-  },
-
-  {
-    id: 'other',
-    title: 'Other',
-    type: 'group',
-    icon: 'icon-navigation',
-    children: [      
+      },
       {
-        id: 'document',
-        title: 'Document',
+        id: 'history-experiences-page',
+        title: 'Historial Paquetes',
         type: 'item',
+        url: '/history-experiences-page',
         classes: 'nav-item',
-        url: 'https://codedthemes.gitbook.io/mantis-angular/',
-        icon: 'question',
-        target: true,
-        external: true
+        icon: 'chrome'
       }
     ]
   }

@@ -1,8 +1,8 @@
 <div class="row justify-content-center g-4">
-  <!-- Columna central: búsqueda y select -->
+  <!-- Columna central -->
   <div class="col-lg-7 col-md-7 col-sm-12">
+    <!-- 🧍 Buscador de clientes -->
     <app-card cardTitle="Buscador de Clientes">
-      <!-- Input y botón -->
       <div class="d-flex flex-column flex-md-row gap-2 mb-3">
         <input type="text" class="form-control form-control-lg" placeholder="Ingrese nombre o ID del cliente"
           [(ngModel)]="query" (keyup.enter)="searchClients()" />
@@ -11,43 +11,108 @@
         </button>
       </div>
 
-      <!-- Spinner mientras carga -->
-      <div *ngIf="loading" class="text-center my-3">
+      <!-- Spinner mientras busca clientes -->
+      <div *ngIf="loadingClients" class="text-center my-3">
         <div class="spinner-border text-primary" role="status">
           <span class="visually-hidden">Cargando...</span>
         </div>
       </div>
 
-      <!-- Select con resultados -->
-      <div *ngIf="clients.length > 0">
+      <!-- Select de clientes -->
+      <div *ngIf="!loadingClients && clients.length > 0">
         <label for="clientSelect" class="form-label">Clientes encontrados</label>
-        <select id="clientSelect" class="form-select form-select-lg">
+        <select id="clientSelect" class="form-select form-select-lg" (change)="onClientSelect($event)">
+          <option value="">Seleccione un cliente</option>
           <option *ngFor="let client of clients" [value]="client.id">
-            Nombres: {{ client.firstName }} {{ client.lastName }} - DNI: {{ client.dni }}
+            {{ client.firstName }} {{ client.lastName }} - DNI: {{ client.dni }}
           </option>
         </select>
       </div>
 
-
-      <!-- Mensaje si no hay resultados -->
-      <div *ngIf="!loading && clients.length === 0 && query.trim() !== ''" class="text-muted mt-2">
+      <!-- No se encontraron clientes -->
+      <div *ngIf="!loadingClients && clients.length === 0 && query.trim() !== ''" class="text-muted mt-2">
         No se encontraron clientes.
       </div>
     </app-card>
 
-    <app-card cardTitle="Buscador de Experiencias">
+    <!-- 🌍 Buscador de experiencias -->
+    <ng-container *ngIf="selectedClientId">
+      <app-card cardTitle="Priorizar Experiencias">
+        <!-- Cargando -->
+        <div *ngIf="loadingPreferences" class="text-center my-3">
+          <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Cargando experiencias...</span>
+          </div>
+        </div>
 
-    </app-card>
+        <!-- Sin experiencias -->
+        <div *ngIf="!loadingPreferences && preferences.length === 0 && !errorMsg" class="text-muted text-center py-3">
+          No hay experiencias asociadas al cliente.
+        </div>
 
+        <!-- Error -->
+        <div *ngIf="errorMsg" class="alert alert-danger text-center">
+          {{ errorMsg }}
+        </div>
+
+        <!-- Lista de experiencias con switches -->
+        <div *ngIf="!loadingPreferences && preferences.length > 0" class="mt-3">
+          <div *ngFor="let pref of preferences" class="form-check form-switch mb-2">
+            <input class="form-check-input" type="checkbox" [id]="'pref-' + pref.id"
+              (change)="onCheckboxChange(pref.id, $event)" />
+            <label class="form-check-label fw-semibold" [for]="'pref-' + pref.id">
+              {{ pref.category || 'Experiencia sin nombre' }}
+            </label>
+          </div>
+
+          <!-- Botón generar paquete -->
+          <div class="text-center mt-4">
+            <button class="btn btn-success btn-lg px-4" (click)="generarPaquete()">
+              <b>Generar Paquete</b>
+            </button>
+          </div>
+        </div>
+
+        <!-- Resultado -->
+        <div *ngIf="recommendationResponse" class="card mt-5 shadow-sm">
+          <div class="card-body">
+            <h4 class="fw-bold text-primary mb-3">Paquete propuesto</h4>
+
+            <div class="mb-3">
+              <h5 class="fw-semibold">🏨 Hotel:</h5>
+              <p>{{ recommendationResponse.hotel?.name }} — {{ recommendationResponse.hotel?.location }}</p>
+              <p><small>{{ recommendationResponse.hotel?.stars }} estrellas</small></p>
+            </div>
+
+            <div class="mb-3">
+              <h5 class="fw-semibold">🍽️ Restaurante:</h5>
+              <p>{{ recommendationResponse.restaurant?.name }} — {{ recommendationResponse.restaurant?.cuisineType }}
+              </p>
+              <p><small>Ubicación: {{ recommendationResponse.restaurant?.location }}</small></p>
+            </div>
+
+            <div class="mb-3">
+              <h5 class="fw-semibold">📍 Lugares recomendados:</h5>
+              <ul class="mb-0">
+                <li *ngFor="let spot of recommendationResponse.spots">
+                  {{ spot.name }} — {{ spot.location }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </app-card>
+    </ng-container>
   </div>
 
   <!-- Columna derecha: imágenes -->
   <div class="col-lg-5 d-none d-lg-block">
     <div class="mb-3">
-      <img src="assets/images/others/comida-selva.jpg" class="img-fluid rounded shadow-sm" alt="Imagen 1">
+      <img src="assets/images/others/comida-selva.jpg" class="img-fluid rounded shadow-sm" alt="Imagen 1" />
     </div>
     <div>
-      <img src="assets/images/others/turista-cusco.jpg" class="img-fluid rounded shadow-sm" alt="Imagen 2">
+      <img src="assets/images/others/turista-cusco.jpg" class="img-fluid rounded shadow-sm" alt="Imagen 2" />
     </div>
   </div>
 </div>

@@ -1,0 +1,111 @@
+<div class="row justify-content-center g-4">
+  <!-- Columna central -->
+  <div class="col-lg-8 col-md-10 col-sm-12">
+    <app-card cardTitle="Historial de Experiencias de Clientes">
+      <!-- Buscador -->
+      <div class="d-flex flex-column flex-md-row gap-2 mb-3">
+        <input
+          type="text"
+          class="form-control form-control-lg"
+          placeholder="Ingrese nombre o DNI del cliente"
+          [(ngModel)]="query"
+          (keyup.enter)="searchClients()"
+        />
+        <button class="btn btn-primary btn-lg" (click)="searchClients()">Buscar</button>
+      </div>
+
+      <!-- Spinner -->
+      <div *ngIf="loadingClients" class="text-center my-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+
+      <!-- Select -->
+      <div *ngIf="!loadingClients && clients.length > 0">
+        <label for="clientSelect" class="form-label">Clientes encontrados</label>
+        <select id="clientSelect" class="form-select form-select-lg" (change)="onClientSelect($event)">
+          <option value="">Seleccione un cliente</option>
+          <option *ngFor="let client of clients" [value]="client.id">
+            {{ client.firstName }} {{ client.lastName }} — DNI: {{ client.dni }}
+          </option>
+        </select>
+      </div>
+
+      <div *ngIf="!loadingClients && clients.length === 0 && query.trim() !== ''" class="text-muted mt-2">
+        No se encontraron clientes.
+      </div>
+    </app-card>
+
+    <!-- Tabla de historial -->
+    <app-card *ngIf="selectedClientId" cardTitle="Historial de Paquetes Recomendados">
+      <div *ngIf="loadingHistory" class="text-center my-3">
+        <div class="spinner-border text-success" role="status">
+          <span class="visually-hidden">Cargando historial...</span>
+        </div>
+      </div>
+
+      <div *ngIf="errorMsg" class="alert alert-danger text-center">{{ errorMsg }}</div>
+
+      <div *ngIf="!loadingHistory && history.length === 0 && !errorMsg" class="text-muted text-center py-3">
+        No hay registros de historial para este cliente.
+      </div>
+
+      <div *ngIf="!loadingHistory && history.length > 0">
+        <table class="table table-hover align-middle shadow-sm">
+          <thead class="table-primary">
+            <tr>
+              <th>#</th>
+              <th>Fecha</th>
+              <th>Hotel</th>
+              <th>Restaurante</th>
+              <th>Lugares</th>
+              <th>Aceptado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of history; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ item.recommendationDate | date: 'short' }}</td>
+              <td>{{ item.travelPackage?.hotels?.[0]?.hotel?.name || '—' }}</td>
+              <td>{{ item.travelPackage?.restaurants?.[0]?.restaurant?.name || '—' }}</td>
+              <td>
+                <ul class="list-unstyled mb-0">
+                  <li *ngFor="let s of item.travelPackage?.spots">
+                    {{ s.touristSpot?.name }} ({{ s.touristSpot?.location }})
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="item.accepted ? 'bg-success' : 'bg-secondary'"
+                >
+                  {{ item.accepted ? 'Sí' : 'No' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Columna derecha con imágenes -->
+  <div class="col-lg-4 d-none d-lg-block">
+    <div class="mb-3">
+      <img
+        src="assets/images/others/consejos-viajes.jpeg"
+        class="img-fluid rounded shadow-sm"
+        alt="Imagen 1"
+      />
+    </div>
+    <div>
+      <img
+        src="assets/images/others/arequipa-viajes.jpg"
+        class="img-fluid rounded shadow-sm"
+        alt="Imagen 2"
+      />
+    </div>
+  </div>
+</div>

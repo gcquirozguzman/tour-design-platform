@@ -35,6 +35,10 @@ const routes: Routes = [
       {
         path: 'experience-design-page',
         loadComponent: () => import('./demo/others/experience-design-page/experience-design-page.component').then((c) => c.ExperienceDesignPageComponent)
+      },
+      {
+        path: 'history-experiences-page',
+        loadComponent: () => import('./demo/others/history-experiences-page/history-experiences-page.component').then((c) => c.HistoryExperiencesPageComponent)
       }
     ]
   },

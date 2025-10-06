@@ -65,4 +65,11 @@ public class ClientPreferenceServiceImpl implements ClientPreferenceService {
             return true;
         }).orElse(false);
     }
+
+    @Override
+    public List<ClientPreferenceModel> searchByClient(Long clientId) {
+        List<ClientPreferenceEntity> listRecommendationEntity = repository.findByClientId(clientId);
+        return mapper.toModelList(listRecommendationEntity);
+    }
+
 }

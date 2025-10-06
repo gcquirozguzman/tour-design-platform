@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Diseño de Experiencia">
+      <div class="row">
+        <div class="col-sm-12 col-md-6 mb-3">
+          <label class="form-label">Cliente</label>
+          <ng-select
+            [items]="clients"
+            bindLabel="firstName"
+            bindValue="id"
+            [loading]="loadingClients"
+            placeholder="Escribe para buscar cliente..."
+            [(ngModel)]="form.value.client">
+          </ng-select>
+        </div>
+
+        <div class="col-sm-12 col-md-6 mb-3">
+          <label class="form-label">Requerimientos</label>
+          <ng-select
+            [items]="preferences"
+            bindLabel="category"
+            bindValue="id"
+            [loading]="loadingPreferences"
+            placeholder="Selecciona un cliente primero"
+            [multiple]="true"
+            [disabled]="form.get('preferences')?.disabled"
+            [(ngModel)]="form.value.preferences">
+          </ng-select>
+        </div>
+      </div>
+    </app-card>
+  </div>
+</div>

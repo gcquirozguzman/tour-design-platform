@@ -31,6 +31,10 @@ const routes: Routes = [
       {
         path: 'sample-page',
         loadComponent: () => import('./demo/others/sample-page/sample-page.component').then((c) => c.SamplePageComponent)
+      },
+      {
+        path: 'experience-design-page',
+        loadComponent: () => import('./demo/others/experience-design-page/experience-design-page.component').then((c) => c.ExperienceDesignPageComponent)
       }
     ]
   },

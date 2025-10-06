@@ -1,6 +1,7 @@
 package com.tourdesign.platform.controller;
 
 import com.tourdesign.platform.model.ClientPreferenceModel;
+import com.tourdesign.platform.model.RecommendationHistoryModel;
 import com.tourdesign.platform.service.ClientPreferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,12 @@ public class ClientPreferenceController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (service.delete(id)) return ResponseEntity.ok().build();
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/searchByClient/{clientId}")
+    public ResponseEntity<List<ClientPreferenceModel>> searchByClient(@PathVariable Long clientId) {
+        List<ClientPreferenceModel> response = service.searchByClient(clientId);
+        return ResponseEntity.ok(response);
     }
 
 }

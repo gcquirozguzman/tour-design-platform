@@ -20,4 +20,6 @@ public interface ClientPreferenceService {
     Optional<ClientPreferenceModel> update(Long id, ClientPreferenceModel obj);
 
     boolean delete(Long id);
+
+    List<ClientPreferenceModel> searchByClient(Long clientId);
 }

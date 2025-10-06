@@ -1834,6 +1834,13 @@
   dependencies:
     tslib "^2.3.0"
 
+"@ng-select/ng-select@^20.2.2":
+  version "20.2.2"
+  resolved "https://registry.yarnpkg.com/@ng-select/ng-select/-/ng-select-20.2.2.tgz#fdea7aa833b148eb214d86951df8d4c40f68d62b"
+  integrity sha512-7mctt04/q9yquE4Ec1dQG+SkY6fZ2BQnJLsWmb05TCxYKAYAzDrDTgJJruPDuWrpYx+f3SwejpaI+z/GDrwYdw==
+  dependencies:
+    tslib "^2.8.1"
+
 "@ngtools/webpack@20.0.4":
   version "20.0.4"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-20.0.4.tgz#5bdf7d75569662bd98ed999ce723a6e850f1473c"

@@ -1,75 +1,43 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule } from '@angular/forms';
 import { CardComponent } from 'src/app/theme/shared/components/card/card.component';
 import { ClientService } from 'src/app/services/client.service';
-import { ClientPreferenceService } from 'src/app/services/client-preference.service';
 import { ClientModel } from 'src/app/models/client.model';
-import { ClientPreferenceModel } from 'src/app/models/client-preference.model';
-import { debounceTime, switchMap, of } from 'rxjs';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-experience-design-page',
   standalone: true,
-  imports: [
-    CommonModule, 
-    CardComponent, 
-    FormsModule, 
-    NgSelectModule
-  ],
+  imports: [CommonModule, FormsModule, CardComponent, NgFor, NgIf],
   templateUrl: './experience-design-page.component.html',
   styleUrls: ['./experience-design-page.component.scss']
 })
 export class ExperienceDesignPageComponent {
-
-  form: FormGroup;
+  query: string = '';
   clients: ClientModel[] = [];
-  preferences: ClientPreferenceModel[] = [];
-  loadingClients = false;
-  loadingPreferences = false;
+  loading: boolean = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private clientService: ClientService,
-    private preferenceService: ClientPreferenceService
-  ) {
-    this.form = this.fb.group({
-      client: [null],
-      preferences: [{ value: [], disabled: true }]
-    });
+  constructor(private clientService: ClientService) {}
 
-    // Busca clientes con debounce
-    this.form.get('client')?.valueChanges
-      .pipe(
-        debounceTime(400),
-        switchMap(value => {
-          if (!value) {
-            this.preferences = [];
-            this.form.get('preferences')?.disable();
-            return of([]);
-          }
-          this.loadingClients = true;
-          return this.clientService.searchByQuery(value);
-        })
-      )
-      .subscribe(clients => {
-        this.clients = clients;
-        this.loadingClients = false;
-      });
+  searchClients() {
+    if (!this.query.trim()) return;
 
-    // Cuando se selecciona un cliente, habilita preferencias
-    this.form.get('client')?.valueChanges.subscribe(client => {
-      if (client && client.id) {
-        this.loadingPreferences = true;
-        this.preferenceService.searchByClient(client.id).subscribe(prefs => {
-          this.preferences = prefs;
-          this.form.get('preferences')?.enable();
-          this.loadingPreferences = false;
-        });
-      } else {
-        this.preferences = [];
-        this.form.get('preferences')?.disable();
+    this.loading = true;
+    this.clientService.searchByQuery(this.query).subscribe({
+      next: (data) => {
+        
+        console.info(data);
+
+        this.clients = data;
+        this.loading = false;
+      },
+      error: (error) => {
+
+        console.info(error);
+
+        this.clients = [];
+        this.loading = false;
       }
     });
   }

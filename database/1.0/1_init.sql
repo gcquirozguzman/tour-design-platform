@@ -20,6 +20,7 @@ CREATE TABLE client (
     id SERIAL PRIMARY KEY,
     firstName VARCHAR(100) NOT NULL,
     lastName VARCHAR(100) NOT NULL,
+    dni VARCHAR(10) NOT NULL,
     birthDate DATE,
     gender VARCHAR(10),
     nationality VARCHAR(50),

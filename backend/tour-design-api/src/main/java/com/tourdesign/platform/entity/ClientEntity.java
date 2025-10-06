@@ -24,6 +24,8 @@ public class ClientEntity {
     @Column(name = "lastname")
     private String lastName;
 
+    private String dni;
+
     @Column(name = "birthdate")
     private LocalDate birthDate;
 

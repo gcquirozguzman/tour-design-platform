@@ -1,33 +1,53 @@
-<div class="row">
-  <div class="col-sm-12">
-    <app-card cardTitle="Diseño de Experiencia">
-      <div class="row">
-        <div class="col-sm-12 col-md-6 mb-3">
-          <label class="form-label">Cliente</label>
-          <ng-select
-            [items]="clients"
-            bindLabel="firstName"
-            bindValue="id"
-            [loading]="loadingClients"
-            placeholder="Escribe para buscar cliente..."
-            [(ngModel)]="form.value.client">
-          </ng-select>
-        </div>
+<div class="row justify-content-center g-4">
+  <!-- Columna central: búsqueda y select -->
+  <div class="col-lg-7 col-md-7 col-sm-12">
+    <app-card cardTitle="Buscador de Clientes">
+      <!-- Input y botón -->
+      <div class="d-flex flex-column flex-md-row gap-2 mb-3">
+        <input type="text" class="form-control form-control-lg" placeholder="Ingrese nombre o ID del cliente"
+          [(ngModel)]="query" (keyup.enter)="searchClients()" />
+        <button class="btn btn-primary btn-lg" (click)="searchClients()">
+          Buscar
+        </button>
+      </div>
 
-        <div class="col-sm-12 col-md-6 mb-3">
-          <label class="form-label">Requerimientos</label>
-          <ng-select
-            [items]="preferences"
-            bindLabel="category"
-            bindValue="id"
-            [loading]="loadingPreferences"
-            placeholder="Selecciona un cliente primero"
-            [multiple]="true"
-            [disabled]="form.get('preferences')?.disabled"
-            [(ngModel)]="form.value.preferences">
-          </ng-select>
+      <!-- Spinner mientras carga -->
+      <div *ngIf="loading" class="text-center my-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
         </div>
       </div>
+
+      <!-- Select con resultados -->
+      <div *ngIf="clients.length > 0">
+        <label for="clientSelect" class="form-label">Clientes encontrados</label>
+        <select id="clientSelect" class="form-select form-select-lg">
+          <option *ngFor="let client of clients" [value]="client.id">
+            Nombres: {{ client.firstName }} {{ client.lastName }} - DNI: {{ client.dni }}
+          </option>
+        </select>
+      </div>
+
+
+      <!-- Mensaje si no hay resultados -->
+      <div *ngIf="!loading && clients.length === 0 && query.trim() !== ''" class="text-muted mt-2">
+        No se encontraron clientes.
+      </div>
     </app-card>
+
+    <app-card cardTitle="Buscador de Experiencias">
+
+    </app-card>
+
+  </div>
+
+  <!-- Columna derecha: imágenes -->
+  <div class="col-lg-5 d-none d-lg-block">
+    <div class="mb-3">
+      <img src="assets/images/others/comida-selva.jpg" class="img-fluid rounded shadow-sm" alt="Imagen 1">
+    </div>
+    <div>
+      <img src="assets/images/others/turista-cusco.jpg" class="img-fluid rounded shadow-sm" alt="Imagen 2">
+    </div>
   </div>
 </div>

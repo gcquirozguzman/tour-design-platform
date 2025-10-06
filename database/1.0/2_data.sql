@@ -1,9 +1,9 @@
-INSERT INTO client (firstName, lastName, birthDate, gender, nationality, email, phone, numberOfChildren, occupation, annualIncome, languages, active)
+INSERT INTO client (firstName, lastName, dni, birthDate, gender, nationality, email, phone, numberOfChildren, occupation, annualIncome, languages, active)
 VALUES
-('Carlos', 'Ramírez', '1985-03-10', 'M', 'Peruana', 'carlos.ramirez@email.com', '+51999999991', 2, 'Ingeniero', 55000.00, 'Español, Inglés', TRUE),
-('María', 'González', '1990-07-22', 'F', 'Peruana', 'maria.gonzalez@email.com', '+51999999992', 1, 'Doctora', 72000.00, 'Español, Inglés', TRUE),
-('Luis', 'Torres', '1978-11-02', 'M', 'Chilena', 'luis.torres@email.com', '+56999999993', 0, 'Arquitecto', 68000.00, 'Español', TRUE),
-('Ana', 'Valdez', '1995-01-15', 'F', 'Argentina', 'ana.valdez@email.com', '+54999999994', 0, 'Diseñadora', 48000.00, 'Español, Inglés', TRUE);
+('Carlos', 'Ramírez', '77885544', '1985-03-10', 'M', 'Peruana', 'carlos.ramirez@email.com', '+51999999991', 2, 'Ingeniero', 55000.00, 'Español, Inglés', TRUE),
+('María', 'González', '55662244', '1990-07-22', 'F', 'Peruana', 'maria.gonzalez@email.com', '+51999999992', 1, 'Doctora', 72000.00, 'Español, Inglés', TRUE),
+('Luis', 'Torres', '88447755', '1978-11-02', 'M', 'Chilena', 'luis.torres@email.com', '+56999999993', 0, 'Arquitecto', 68000.00, 'Español', TRUE),
+('Ana', 'Valdez', '22339999', '1995-01-15', 'F', 'Argentina', 'ana.valdez@email.com', '+54999999994', 0, 'Diseñadora', 48000.00, 'Español, Inglés', TRUE);
 
 INSERT INTO client_preference (client_id, category, interestLevel, details)
 VALUES

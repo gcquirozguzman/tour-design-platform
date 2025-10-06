@@ -6,6 +6,7 @@ export interface ClientModel {
   id: number;
   firstName: string;
   lastName: string;
+  dni: string;
   birthDate?: string;
   gender?: string;
   nationality?: string;

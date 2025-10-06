@@ -13,17 +13,31 @@ public class ClientModel {
     private Long id;
 
     private String firstName;
+
     private String lastName;
+
+    private String dni;
+
     private LocalDate birthDate;
+
     private String gender;
+
     private String nationality;
+
     private String email;
+
     private String phone;
+
     private Integer numberOfChildren;
+
     private String occupation;
+
     private Double annualIncome;
+
     private String languages;
+
     private LocalDateTime registrationDate;
+
     private Boolean active;
 
     private List<ClientPreferenceModel> preferences;
